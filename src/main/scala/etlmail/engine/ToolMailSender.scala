@@ -97,9 +97,11 @@ abstract class ToolMailSender {
     val imageNames: Set[String] = new HashSet[String]()
     for (image <- doc.select("img")) {
       val source = image.attr("src")
-      imageNames.add(source)
-      image.attr("src", "cid:" + source)
-      log.debug("Convert image to cid :" + source)
+      if (source != null && !source.startsWith("http://")) {
+        imageNames.add(source)
+        image.attr("src", "cid:" + source)
+        log.debug("Convert image to cid: {}", source)
+      }
     }
     return imageNames
   }

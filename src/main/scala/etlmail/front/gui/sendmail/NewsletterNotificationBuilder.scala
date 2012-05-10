@@ -23,17 +23,19 @@ class NewsletterNotificationBuilder {
   val templateDocument = new FileDocument
   val fromDocument = new DefaultStyledDocument
   val toDocument = new DefaultStyledDocument
+  val ccDocument = new DefaultStyledDocument
 
   @volatile private var subject_ = ""
   @volatile private var template_ = new File("")
   @volatile private var from_ = ""
   @volatile private var to_ = ""
+  @volatile private var cc_ = ""
 
   def subject: String = subject_
   def template: File = template_
   def from: String = from_
   def to: String = to_
-  val cc: String = ""
+  val cc: String = cc_
 
   private val variables = new HashMap[String, Any]
 
@@ -52,15 +54,18 @@ class NewsletterNotificationBuilder {
       }
     })
     fromDocument.addDocumentListener(new DocumentAdapter {
-      @Override
       protected def update(newText: String) {
         from_ = newText
       }
     })
     toDocument.addDocumentListener(new DocumentAdapter {
-      @Override
       protected def update(newText: String) {
         to_ = newText
+      }
+    })
+    ccDocument.addDocumentListener(new DocumentAdapter {
+      protected def update(newText: String) {
+        cc_ = newText
       }
     })
   }
@@ -99,6 +104,14 @@ class NewsletterNotificationBuilder {
    */
   def to(to: String): NewsletterNotificationBuilder = {
     setText(toDocument, to)
+    return this
+  }
+
+  /**
+   * Only call from the EDT
+   */
+  def cc(cc: String): NewsletterNotificationBuilder = {
+    setText(ccDocument, cc)
     return this
   }
 }

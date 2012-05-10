@@ -20,16 +20,17 @@ import etlmail.front.gui.application.ShutdownEvent
 import etlmail.front.gui.sendmail.NewsletterNotificationBuilder
 
 object SavePrefences {
-  val FILENAME: String = "mailgui.properties"
+  private val FILENAME: String = "mailgui.properties"
 
-  val TO: String = "to"
-  val FROM: String = "from"
-  val SUBJECT: String = "subject"
-  val TEMPLATE: String = "template"
+  private val TO: String = "to"
+  private val FROM: String = "from"
+  private val CC: String = "cc"
+  private val SUBJECT: String = "subject"
+  private val TEMPLATE: String = "template"
 
-  val SERVER: String = "server"
-  val PORT: String = "port"
-  val USER: String = "user"
+  private val SERVER: String = "server"
+  private val PORT: String = "port"
+  private val USER: String = "user"
 }
 
 @Component
@@ -63,6 +64,7 @@ class SavePrefences extends ApplicationListener[ShutdownEvent] with Logging {
   @InvokeAndWait
   private def fromProperties(restored: Properties) {
     notificationBuilder.to(restored.getProperty(TO))
+    notificationBuilder.cc(restored.getProperty(CC))
     notificationBuilder.from(restored.getProperty(FROM))
     notificationBuilder.subject(restored.getProperty(SUBJECT))
     val template = restored.getProperty(TEMPLATE)
@@ -87,6 +89,7 @@ class SavePrefences extends ApplicationListener[ShutdownEvent] with Logging {
   private def toProperties(): Properties = {
     val toSave = new Properties
     toSave.setProperty(TO, notificationBuilder.to)
+    toSave.setProperty(CC, notificationBuilder.cc)
     toSave.setProperty(FROM, notificationBuilder.from)
     toSave.setProperty(SUBJECT, notificationBuilder.subject)
     toSave.setProperty(TEMPLATE, notificationBuilder.template.getPath)
