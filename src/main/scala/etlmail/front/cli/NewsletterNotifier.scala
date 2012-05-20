@@ -1,13 +1,13 @@
-package etlmail.front.cli;
+package etlmail.front.cli
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.stereotype.Component
 
 import grizzled.slf4j.Logging
 
-import etlmail.engine.NewsletterNotification;
-import etlmail.engine.ToolMailSender;
+import etlmail.engine.NewsletterNotification
+import etlmail.engine.ToolMailSender
 
 @Component
 class NewsletterNotifier extends Logging {
@@ -34,7 +34,7 @@ object NewsletterNotifier extends App with Logging {
   } catch {
     case e: Exception =>
       error("Error, could not send mail", e)
-      exitOnError();
+      exitOnError()
   }
 
   def exitOnError() {

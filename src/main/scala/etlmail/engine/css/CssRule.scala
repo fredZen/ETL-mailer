@@ -27,11 +27,11 @@ class CssRule(val simpleSelector: String, val properties: String) extends Ordere
 
   def prependProperties(doc: Document) {
     for (selElem <- doc.select(simpleSelector)) {
-      val oldProperties = selElem.attr("style");
-      selElem.attr("style", concatenateProperties(oldProperties, properties));
+      val oldProperties = selElem.attr("style")
+      selElem.attr("style", concatenateProperties(oldProperties, properties))
     }
   }
 
   private def concatenateProperties(oldProp: String, newProp: String): String =
-    strip(strip(oldProp), ";") + ";" + strip(newProp)
+    strip(strip(oldProp), "") + "" + strip(newProp)
 }

@@ -3,7 +3,6 @@ package etlmail.front.gui.about
 import java.awt.image.BufferedImage
 import java.io.IOException
 import java.io.InputStream
-import java.util.List
 import java.util.concurrent.ExecutionException
 
 import javax.imageio.ImageIO
@@ -24,6 +23,7 @@ import com.sun.syndication.feed.synd.SyndEntry
 import com.sun.syndication.feed.synd.SyndFeed
 import com.sun.syndication.io._
 import grizzled.slf4j.Logging
+import scala.collection.JavaConverters._
 
 @Component
 class ImageProvider {
@@ -59,21 +59,21 @@ class FetchImageWorker(label: JLabel, feedUrl: String) extends SwingWorker[Buffe
     val bonjourStream = get(url)
     val feed = input.build(new XmlReader(bonjourStream))
     bonjourStream.close()
-    return feed.getEntries.asInstanceOf[List[SyndEntry]]
+    feed.getEntries.asInstanceOf[java.util.List[SyndEntry]].asScala.toList
   }
 
   private def getUrlDerniereImage(entries: List[SyndEntry]): String = {
-    val derniereEntree = entries.get(0).getDescription.getValue
+    val derniereEntree = entries(0).getDescription.getValue
     val doc = Jsoup.parse(derniereEntree)
     val image = doc.getElementsByTag("img")
-    return image.attr("src")
+    image.attr("src")
   }
 
   private def getImage(url: String): BufferedImage = {
     val imageStream = get(url)
     val image = ImageIO.read(imageStream)
     imageStream.close()
-    return image
+    image
   }
 
   private def get(url: String): InputStream = {

@@ -1,8 +1,6 @@
 package etlmail.front.gui.choosetemplate
 
 import java.io.File
-import java.util.ArrayList
-import java.util.List
 
 import javax.swing.event.DocumentListener
 import javax.swing.event.UndoableEditListener
@@ -12,9 +10,10 @@ import etlmail.front.gui.helper.DocumentAdapter
 import etlmail.front.gui.helper.ModelUtils
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable.ArrayBuffer
 
 class FileDocument(wrapped: Document) extends Document {
-  private val listeners = new ArrayList[FilenameListener]
+  private val listeners = ArrayBuffer[FilenameListener]()
 
   wrapped.addDocumentListener(new DocumentAdapter {
     protected def update(newText: String) {
@@ -35,7 +34,7 @@ class FileDocument(wrapped: Document) extends Document {
   }
 
   def addFilenameListener(listener: FilenameListener) {
-    listeners.add(listener)
+    listeners += listener
   }
 
   def addDocumentListener(listener: DocumentListener) {

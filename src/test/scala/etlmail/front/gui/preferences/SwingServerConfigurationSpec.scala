@@ -6,7 +6,7 @@ import org.scalatest.FlatSpec
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class SwingServerConfigurationTest extends FlatSpec with ShouldMatchers {
+class SwingServerConfigurationSpec extends FlatSpec with ShouldMatchers {
   "the form's fields" should "never be null" in {
     // given
     val builder = new SwingServerConfiguration

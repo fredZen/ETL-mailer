@@ -1,12 +1,9 @@
-package etlmail.front.cli;
-
-import java.util.HashMap;
-import java.util.Map;
+package etlmail.front.cli
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation._
 
-import etlmail.engine.NewsletterNotification;
+import etlmail.engine.NewsletterNotification
 
 @Configuration
 @PropertySource(Array("classpath:mailTool.properties"))
@@ -22,5 +19,5 @@ class CliAppCtx {
     @Value("${mail.cc}") cc: String,
     @Value("${mail.subject}") subject: String,
     @Value("${mail.template}") template: String): NewsletterNotification =
-    new NewsletterNotification(subject, template, resourcesDirectory, from, to, cc, new HashMap[String, Any])
+    new NewsletterNotification(subject, template, resourcesDirectory, from, to, cc, Map[String, Any]())
 }

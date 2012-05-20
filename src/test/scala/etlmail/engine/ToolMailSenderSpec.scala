@@ -1,7 +1,6 @@
 package etlmail.engine
 
 import java.lang.Override
-import java.util.Arrays
 
 import org.apache.velocity.app.VelocityEngine
 import org.apache.velocity.tools.ToolContext
@@ -41,7 +40,7 @@ object Mockery {
 
 @Configuration
 @PropertySource(Array("classpath:mailTool.properties"))
-class Mockery extends EasyMockSupport with EasyMockSugar {
+class Mockery extends EasyMockSugar {
   @Bean
   def javaMailSender = mock[JavaMailSender]
 
@@ -64,40 +63,18 @@ class ToolMailSenderSpec extends FlatSpec with ShouldMatchers with EasyMockSugar
 
   @Autowired var mockery: Mockery = _
 
+  implicit val mocks = MockObjects(mockery.javaMailSender, mockery.cssInliner, mockery.toolContext)
+
   "sendMail" should "call JavaMailSender" in {
     // given
     expecting {
       javaMailSenderMock.send(anyObject(classOf[MimeMessagePreparator]))
     }
-    mockery.replayAll()
 
     // when
-    toolMailSender.sendMail(null)
-
-    // then
-    mockery.verifyAll()
-  }
-
-  "toStringArray with a 2 element list" should "yield an array with both elements" in {
-    // given
-    val strings = Arrays.asList("string1", "string2")
-
-    // when
-    val stringArray = toolMailSender.toStringArray(strings)
-
-    // then
-    stringArray should be(Array("string1", "string2"))
-  }
-
-  "toStringArray without a list" should "yield an empty array" in {
-    // given
-    val strings = null
-
-    // when
-    val stringArray = toolMailSender.toStringArray(strings)
-
-    // then
-    stringArray should have length (0)
+    whenExecuting {
+      toolMailSender.sendMail(null)
+    }
   }
 
   "getAddressesFromString" should "split a string on commas, ignoring optional finishing commas" in {
@@ -122,7 +99,7 @@ class ToolMailSenderSpec extends FlatSpec with ShouldMatchers with EasyMockSugar
     val addressListEmpty = toolMailSender.getAddressesFromString(addressesEmpty)
 
     // then
-    addressListEmpty should be('empty)
+    addressListEmpty should have size (0)
   }
 
   "convertImagesToCid with duplicate images" should "only keep 1" in {

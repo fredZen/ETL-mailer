@@ -6,7 +6,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
 
 @RunWith(classOf[JUnitRunner])
-class PropertyBuilderTest extends FlatSpec with ShouldMatchers {
+class PropertyBuilderSpec extends FlatSpec with ShouldMatchers {
   "one key-value pair" should "result in a properties object with one entry" in {
     // given
     val resultat = new PropertyBuilder() //

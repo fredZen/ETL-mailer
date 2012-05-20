@@ -1,9 +1,9 @@
-package etlmail.front.cli;
+package etlmail.front.cli
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 
-import etlmail.context.ServerConfiguration;
+import etlmail.context.ServerConfiguration
 
 @Component
 class PropertyServerConfiguration extends ServerConfiguration {

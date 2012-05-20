@@ -6,7 +6,7 @@ import org.scalatest.FlatSpec
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class CssRuleTest extends FlatSpec with ShouldMatchers {
+class CssRuleSpec extends FlatSpec with ShouldMatchers {
   "getSpecificity" should "find a html type" in {
     // given
     val rule = new CssRule("div", null)

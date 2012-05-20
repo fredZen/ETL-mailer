@@ -1,10 +1,7 @@
 package etlmail.front.gui.application
 
-import java.util.Collections.synchronizedMap
-
 import java.awt.Window
-import java.util.Map
-import java.util.WeakHashMap
+import scala.collection.mutable.{ WeakHashMap, SynchronizedMap }
 
 import org.apache.commons.lang.Validate
 import org.springframework.context.ApplicationListener
@@ -13,7 +10,7 @@ import scala.collection.JavaConversions._
 
 @Component
 class WindowJanitor extends ApplicationListener[ShutdownEvent] {
-  private val windows = synchronizedMap(new WeakHashMap[Window, WindowJanitor])
+  private val windows = new WeakHashMap[Window, WindowJanitor] with SynchronizedMap[Window, WindowJanitor]
 
   def onApplicationEvent(event: ShutdownEvent) {
     windows.synchronized {

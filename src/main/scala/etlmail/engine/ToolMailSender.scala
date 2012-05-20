@@ -1,7 +1,6 @@
 package etlmail.engine
 
 import java.io._
-import java.util._
 
 import javax.mail.internet.MimeMessage
 
@@ -18,6 +17,7 @@ import org.springframework.mail.javamail._
 
 import etlmail.engine.css.CssInliner
 
+import scala.collection.mutable.{ HashSet, Set }
 import scala.collection.JavaConversions._
 import grizzled.slf4j.Logging
 
@@ -38,8 +38,8 @@ abstract class ToolMailSender extends Logging {
       @Override
       def prepare(mimeMessage: MimeMessage) {
         val message = new MimeMessageHelper(mimeMessage, true)
-        message.setTo(toStringArray(getAddressesFromString(notification.to)))
-        message.setCc(toStringArray(getAddressesFromString(notification.cc)))
+        message.setTo(getAddressesFromString(notification.to))
+        message.setCc(getAddressesFromString(notification.cc))
         message.setFrom(notification.from)
         message.setSubject(notification.subject)
 
@@ -71,23 +71,12 @@ abstract class ToolMailSender extends Logging {
     return result.toString
   }
 
-  def getAddressesFromString(addresses: String): List[String] = {
-    val tokenizer = new StringTokenizer(addresses, ",")
-    val addressList = new ArrayList[String]
-    while (tokenizer.hasMoreElements) {
-      val addresse = tokenizer.nextElement().asInstanceOf[String].trim.toLowerCase
-      addressList.add(addresse)
-    }
-
-    return addressList
-  }
-
-  def toStringArray(strings: List[String]): Array[String] =
-    if (strings == null) {
-      new Array[String](0)
-    } else {
-      strings.toArray(new Array[String](strings.size))
-    }
+  def getAddressesFromString(addresses: String): Array[String] =
+    for {
+      adresse <- addresses.split(",")
+      adressePure = adresse.trim
+      if (!adressePure.isEmpty)
+    } yield adressePure.toLowerCase
 
   def convertImagesToCid(doc: Document): Collection[String] = {
     val imageNames: Set[String] = new HashSet[String]

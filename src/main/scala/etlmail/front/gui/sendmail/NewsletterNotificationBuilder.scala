@@ -1,20 +1,18 @@
-package etlmail.front.gui.sendmail;
+package etlmail.front.gui.sendmail
 
-import etlmail.front.gui.helper.ModelUtils.setText;
+import etlmail.front.gui.helper.ModelUtils.setText
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File
 
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
+import javax.swing.text.DefaultStyledDocument
+import javax.swing.text.Document
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Component
 
-import etlmail.engine.NewsletterNotification;
-import etlmail.front.gui.choosetemplate.FileDocument;
-import etlmail.front.gui.choosetemplate.FilenameListener;
-import etlmail.front.gui.helper.DocumentAdapter;
+import etlmail.engine.NewsletterNotification
+import etlmail.front.gui.choosetemplate.FileDocument
+import etlmail.front.gui.choosetemplate.FilenameListener
+import etlmail.front.gui.helper.DocumentAdapter
 import etlmail.front.gui.helper.Edt._
 
 @Component
@@ -37,7 +35,7 @@ class NewsletterNotificationBuilder {
   def to: String = to_
   val cc: String = cc_
 
-  private val variables = new HashMap[String, Any]
+  private val variables = Map[String, Any]()
 
   init()
 
