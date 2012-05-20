@@ -10,22 +10,17 @@ import etlmail.engine.NewsletterNotification;
 
 @Configuration
 @PropertySource(Array("classpath:mailTool.properties"))
-@ComponentScan(basePackageClasses = Array( //
-  classOf[etlmail.context.ComponentScanMarker], //
-  classOf[etlmail.front.cli.ComponentScanMarker] //
-  ))
+@ComponentScan(basePackageClasses = Array(
+  classOf[etlmail.context.ComponentScanMarker],
+  classOf[etlmail.front.cli.ComponentScanMarker]))
 class CliAppCtx {
   @Bean
-  def notification( //
-    @Value("${mail.resources.directory}") resourcesDirectory: String, //
-    @Value("${mail.from}") from: String, //
-    @Value("${mail.to}") to: String, //
-    @Value("${mail.cc}") cc: String, //
-    @Value("${mail.subject}") subject: String, //
-    @Value("${mail.template}") template: String //
-    ): NewsletterNotification = {
-    def variables = new HashMap[String, Any]
-
-    return new NewsletterNotification(subject, template, resourcesDirectory, from, to, cc, variables)
-  }
+  def notification(
+    @Value("${mail.resources.directory}") resourcesDirectory: String,
+    @Value("${mail.from}") from: String,
+    @Value("${mail.to}") to: String,
+    @Value("${mail.cc}") cc: String,
+    @Value("${mail.subject}") subject: String,
+    @Value("${mail.template}") template: String): NewsletterNotification =
+    new NewsletterNotification(subject, template, resourcesDirectory, from, to, cc, new HashMap[String, Any])
 }

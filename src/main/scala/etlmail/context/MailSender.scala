@@ -17,8 +17,8 @@ class MailSender extends JavaMailSender {
 
   private val bean = new JavaMailSenderImpl
 
-  bean.setJavaMailProperties(new PropertyBuilder //
-    key "mail.smtp.auth" yields "true" //
+  bean.setJavaMailProperties(new PropertyBuilder
+    key "mail.smtp.auth" yields "true"
     key "mail.smtp.starttls.enable" yields "true" //
     asProperties)
 
@@ -30,44 +30,37 @@ class MailSender extends JavaMailSender {
     bean
   }
 
-  @Override
   @throws(classOf[MailException])
   def send(simpleMessage: SimpleMailMessage) {
-    reconfigure().send(simpleMessage);
+    reconfigure().send(simpleMessage)
   }
 
-  @Override
   @throws(classOf[MailException])
   def send(simpleMessages: Array[SimpleMailMessage]) {
-    reconfigure().send(simpleMessages);
+    reconfigure().send(simpleMessages)
   }
 
-  @Override
   def createMimeMessage(): MimeMessage = reconfigure().createMimeMessage()
 
-  @Override
   @throws(classOf[MailException])
-  def createMimeMessage(contentStream: InputStream): MimeMessage = reconfigure().createMimeMessage(contentStream)
+  def createMimeMessage(contentStream: InputStream): MimeMessage =
+    reconfigure().createMimeMessage(contentStream)
 
-  @Override
   @throws(classOf[MailException])
   def send(mimeMessage: MimeMessage) {
     reconfigure().send(mimeMessage)
   }
 
-  @Override
   @throws(classOf[MailException])
   def send(mimeMessages: Array[MimeMessage]) {
     reconfigure().send(mimeMessages)
   }
 
-  @Override
   @throws(classOf[MailException])
   def send(mimeMessagePreparator: MimeMessagePreparator) {
     reconfigure().send(mimeMessagePreparator)
   }
 
-  @Override
   @throws(classOf[MailException])
   def send(mimeMessagePreparators: Array[MimeMessagePreparator]) {
     reconfigure().send(mimeMessagePreparators)

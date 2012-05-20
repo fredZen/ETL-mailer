@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.weiglewilczek.slf4s.Logging
+import grizzled.slf4j.Logging
 
 import etlmail.engine.NewsletterNotification;
 import etlmail.engine.ToolMailSender;
@@ -18,22 +18,22 @@ class NewsletterNotifier extends Logging {
   @Autowired private var newsletterNotification: NewsletterNotification = _
 
   def run() {
-    logger.info("Sending mail...")
+    info("Sending mail...")
     toolMailSender.sendMail(newsletterNotification)
-    logger.info("Mail successfully sent")
+    info("Mail successfully sent")
     exitOnSuccess()
   }
 }
 
 object NewsletterNotifier extends App with Logging {
   try {
-    logger.info("Initializing mail tool...")
+    info("Initializing mail tool...")
     val ctx = new AnnotationConfigApplicationContext(classOf[CliAppCtx])
     ctx.registerShutdownHook()
     ctx.getBean(classOf[NewsletterNotifier]).run()
   } catch {
     case e: Exception =>
-      logger.error("Error, could not send mail", e)
+      error("Error, could not send mail", e)
       exitOnError();
   }
 

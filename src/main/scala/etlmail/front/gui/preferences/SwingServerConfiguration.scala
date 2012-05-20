@@ -8,8 +8,8 @@ import javax.swing.text.Document
 import org.springframework.stereotype.Component
 
 import etlmail.context.ServerConfiguration
-import etlmail.front.gui.application.InvokeAndWait
 import etlmail.front.gui.helper.DocumentAdapter
+import etlmail.front.gui.helper.Edt._
 
 @Component
 class SwingServerConfiguration extends ServerConfiguration {
@@ -31,24 +31,23 @@ class SwingServerConfiguration extends ServerConfiguration {
   def username: String = username_
   def password: String = password_
 
-  @InvokeAndWait
-  private def init() {
-    hostDocument.addDocumentListener(new DocumentAdapter() {
+  private def init() = invokeAndWait {
+    hostDocument.addDocumentListener(new DocumentAdapter {
       protected def update(newText: String) {
         host_ = newText
       }
     })
-    portDocument.addDocumentListener(new DocumentAdapter() {
+    portDocument.addDocumentListener(new DocumentAdapter {
       protected def update(newText: String) {
         port_ = Integer.parseInt(newText)
       }
     })
-    usernameDocument.addDocumentListener(new DocumentAdapter() {
+    usernameDocument.addDocumentListener(new DocumentAdapter {
       protected def update(newText: String) {
         username_ = newText
       }
     })
-    passwordDocument.addDocumentListener(new DocumentAdapter() {
+    passwordDocument.addDocumentListener(new DocumentAdapter {
       protected def update(newText: String) {
         password_ = newText
       }

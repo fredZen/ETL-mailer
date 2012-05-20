@@ -5,19 +5,17 @@ import java.util.Properties
 
 import javax.annotation.PostConstruct
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 
 import com.google.common.io.Closeables
 
-import com.weiglewilczek.slf4s.Logging
+import grizzled.slf4j.Logging
 
-import etlmail.front.gui.application.InvokeAndWait
 import etlmail.front.gui.application.ShutdownEvent
 import etlmail.front.gui.sendmail.NewsletterNotificationBuilder
+import etlmail.front.gui.helper.Edt._
 
 object SavePrefences {
   private val FILENAME: String = "mailgui.properties"
@@ -54,15 +52,14 @@ class SavePrefences extends ApplicationListener[ShutdownEvent] with Logging {
       in.close()
     } catch {
       case e: IOException =>
-        logger.error("Cannot read preferences", e)
+        error("Cannot read preferences", e)
     } finally {
       Closeables.closeQuietly(in)
     }
     return restored
   }
 
-  @InvokeAndWait
-  private def fromProperties(restored: Properties) {
+  private def fromProperties(restored: Properties) = invokeAndWait {
     notificationBuilder.to(restored.getProperty(TO))
     notificationBuilder.cc(restored.getProperty(CC))
     notificationBuilder.from(restored.getProperty(FROM))
@@ -85,8 +82,7 @@ class SavePrefences extends ApplicationListener[ShutdownEvent] with Logging {
     writeProperties(toProperties())
   }
 
-  @InvokeAndWait
-  private def toProperties(): Properties = {
+  private def toProperties(): Properties = invokeAndWait {
     val toSave = new Properties
     toSave.setProperty(TO, notificationBuilder.to)
     toSave.setProperty(CC, notificationBuilder.cc)
@@ -98,7 +94,7 @@ class SavePrefences extends ApplicationListener[ShutdownEvent] with Logging {
     toSave.setProperty(PORT, Integer.toString(serverConfiguration.port))
     toSave.setProperty(USER, serverConfiguration.username)
 
-    return toSave
+    toSave
   }
 
   private def writeProperties(toSave: Properties) {
@@ -109,7 +105,7 @@ class SavePrefences extends ApplicationListener[ShutdownEvent] with Logging {
       out.close()
     } catch {
       case e: IOException =>
-        logger.error("Cannot save preferences", e)
+        error("Cannot save preferences", e)
     } finally {
       Closeables.closeQuietly(out)
     }

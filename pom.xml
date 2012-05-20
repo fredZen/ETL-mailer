@@ -8,15 +8,12 @@
 	<version>0.2.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.6</java.version>
 		<scala.version>2.9.2</scala.version>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<cglib.version>2.2.2</cglib.version>
 		<persistence-api.version>1.0</persistence-api.version>
-		<aspectj.version>1.6.11</aspectj.version>
-		<aspectj-maven-plugin.version>1.4</aspectj-maven-plugin.version>
 		<slf4j.version>1.6.4</slf4j.version>
-		<slf4s.version>1.0.7</slf4s.version>
+		<grizzled-slf4j.version>0.6.9</grizzled-slf4j.version>
 		<logback.version>1.0.0</logback.version>
 		<groovy.version>1.8.6</groovy.version>
 		<junit.version>4.10</junit.version>
@@ -40,7 +37,7 @@
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
-			<version>2.9.1-1</version>
+			<version>${scala.version}</version>
 		</dependency>
 
 		<!-- Spring and friends -->
@@ -59,11 +56,6 @@
 			<artifactId>cglib</artifactId>
 			<version>${cglib.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
 
 		<!-- Logging -->
 		<dependency>
@@ -77,9 +69,9 @@
 			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.weiglewilczek.slf4s</groupId>
-			<artifactId>slf4s_2.9.1</artifactId>
-			<version>${slf4s.version}</version>
+			<groupId>org.clapper</groupId>
+			<artifactId>grizzled-slf4j_${scala.version}</artifactId>
+			<version>${grizzled-slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -222,82 +214,18 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>${aspectj-maven-plugin.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>test-compile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<verbose>false</verbose>
-					<outxml>true</outxml>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
+				<version>2.15.2</version>
 				<executions>
 					<execution>
-						<id>scala-compile-first</id>
-						<phase>process-resources</phase>
 						<goals>
-							<goal>add-source</goal>
 							<goal>compile</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>scala-test-compile</id>
-						<phase>process-test-resources</phase>
-						<goals>
 							<goal>testCompile</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-					<configuration>
-						<compilerVersion>${java.version}</compilerVersion>
-						<fork>true</fork>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.4.3</version>
-				</plugin>
-				<plugin>
-					<groupId>org.scala-tools</groupId>
-					<artifactId>maven-scala-plugin</artifactId>
-					<version>2.15.2</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 </project>

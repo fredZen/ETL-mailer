@@ -15,10 +15,10 @@ import scala.collection.JavaConversions._
 class CssInliner {
   def inlineStyles(doc: Document) {
     for (style <- doc.select("style")) {
-      val styleRules = style.getAllElements().get(0).data().replaceAll("\n", "").trim()
+      val styleRules = style.getAllElements().get(0).data.replaceAll("\n", "").trim
       val st = new StringTokenizer(styleRules, "{}")
       val cssRules = new ArrayList[CssRule]()
-      while (st.countTokens() > 1) {
+      while (st.countTokens > 1) {
         val selector = st.nextToken()
         val properties = st.nextToken()
         for (simpleSelector <- selector.split(",")) {

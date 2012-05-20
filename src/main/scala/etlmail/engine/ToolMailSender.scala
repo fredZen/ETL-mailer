@@ -12,25 +12,22 @@ import org.apache.velocity.tools.ToolContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.FileSystemResource
 import org.springframework.mail.javamail._
 
 import etlmail.engine.css.CssInliner
-import etlmail.front.gui.application.SwingPolicies
 
 import scala.collection.JavaConversions._
+import grizzled.slf4j.Logging
 
-abstract class ToolMailSender {
-  private val log = LoggerFactory.getLogger(classOf[ToolMailSender])
+abstract class ToolMailSender extends Logging {
 
-  @Autowired var javaMailSender: JavaMailSender = null
+  @Autowired var javaMailSender: JavaMailSender = _
 
-  @Autowired var cssInliner: CssInliner = null
+  @Autowired var cssInliner: CssInliner = _
 
-  @Autowired var toolContext: ToolContext = null
+  @Autowired var toolContext: ToolContext = _
 
   @throws(classOf[VelocityException])
   @throws(classOf[IOException])
@@ -41,11 +38,10 @@ abstract class ToolMailSender {
       @Override
       def prepare(mimeMessage: MimeMessage) {
         val message = new MimeMessageHelper(mimeMessage, true)
-        message.setTo(toStringArray(getAddressesFromString(notification.to))) // Set destinators
-        message.setCc(toStringArray(getAddressesFromString(notification.cc))) // Set CC destinators
-        message.setFrom(notification.from) // Set source email
-        message.setSubject(notification.subject) // Set eMail
-        // Subject
+        message.setTo(toStringArray(getAddressesFromString(notification.to)))
+        message.setCc(toStringArray(getAddressesFromString(notification.cc)))
+        message.setFrom(notification.from)
+        message.setSubject(notification.subject)
 
         val text = render(notification)
 
@@ -54,7 +50,7 @@ abstract class ToolMailSender {
         val imageNames = convertImagesToCid(doc)
         cssInliner.inlineStyles(doc)
 
-        message.setText(doc.outerHtml(), true)
+        message.setText(doc.outerHtml, true)
 
         val resources = new File(notification.resourcesPath)
         // Adding Inline Resources
@@ -69,17 +65,17 @@ abstract class ToolMailSender {
   @throws(classOf[IOException])
   def render(notification: NewsletterNotification): String = {
     val velocityEngine = this.velocityEngine(notification.resourcesPath)
-    val result = new StringWriter()
+    val result = new StringWriter
     val velocityContext = new VelocityContext(notification.variables, toolContext)
     velocityEngine.mergeTemplate(notification.template, "UTF-8", velocityContext, result)
-    return result.toString()
+    return result.toString
   }
 
   def getAddressesFromString(addresses: String): List[String] = {
     val tokenizer = new StringTokenizer(addresses, ",")
-    val addressList = new ArrayList[String]()
-    while (tokenizer.hasMoreElements()) {
-      val addresse = tokenizer.nextElement().asInstanceOf[String].trim().toLowerCase()
+    val addressList = new ArrayList[String]
+    while (tokenizer.hasMoreElements) {
+      val addresse = tokenizer.nextElement().asInstanceOf[String].trim.toLowerCase
       addressList.add(addresse)
     }
 
@@ -90,17 +86,17 @@ abstract class ToolMailSender {
     if (strings == null) {
       new Array[String](0)
     } else {
-      strings.toArray(new Array[String](strings.size()))
+      strings.toArray(new Array[String](strings.size))
     }
 
   def convertImagesToCid(doc: Document): Collection[String] = {
-    val imageNames: Set[String] = new HashSet[String]()
+    val imageNames: Set[String] = new HashSet[String]
     for (image <- doc.select("img")) {
       val source = image.attr("src")
       if (source != null && !source.startsWith("http://")) {
         imageNames.add(source)
         image.attr("src", "cid:" + source)
-        log.debug("Convert image to cid: {}", source)
+        debug("Convert image to cid: " + source)
       }
     }
     return imageNames

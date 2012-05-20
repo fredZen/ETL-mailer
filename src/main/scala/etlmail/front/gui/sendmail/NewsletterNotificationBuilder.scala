@@ -12,10 +12,10 @@ import javax.swing.text.Document;
 import org.springframework.stereotype.Component;
 
 import etlmail.engine.NewsletterNotification;
-import etlmail.front.gui.application.InvokeAndWait;
 import etlmail.front.gui.choosetemplate.FileDocument;
 import etlmail.front.gui.choosetemplate.FilenameListener;
 import etlmail.front.gui.helper.DocumentAdapter;
+import etlmail.front.gui.helper.Edt._
 
 @Component
 class NewsletterNotificationBuilder {
@@ -41,8 +41,7 @@ class NewsletterNotificationBuilder {
 
   init()
 
-  @InvokeAndWait
-  private def init() {
+  private def init() = invokeAndWait {
     subjectDocument.addDocumentListener(new DocumentAdapter {
       protected def update(newText: String) {
         subject_ = newText

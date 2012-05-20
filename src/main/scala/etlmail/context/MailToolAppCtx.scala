@@ -18,24 +18,26 @@ object MailToolAppCtx {
 }
 
 @Configuration
-@ComponentScan(basePackageClasses = Array( //
-  classOf[etlmail.context.ComponentScanMarker], //
-  classOf[etlmail.engine.ComponentScanMarker] //
-  ))
+@ComponentScan(basePackageClasses = Array(
+  classOf[etlmail.context.ComponentScanMarker],
+  classOf[etlmail.engine.ComponentScanMarker]))
 class MailToolAppCtx {
   @Bean
   @Scope(SCOPE_PROTOTYPE)
   def toolMailSender =
-    new ToolMailSender() {
+    new ToolMailSender {
       @Override
       def velocityEngine(resourcesDirectory: String): VelocityEngine = {
-        val velocityEngine = new VelocityEngine()
+        val velocityEngine = new VelocityEngine
         velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, resourcesDirectory)
-        velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, classOf[CommonsLogLogChute].getName())
+        velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, classOf[CommonsLogLogChute].getName)
         return velocityEngine
       }
     }
 
   @Bean
-  def toolContext(): ToolContext = new ToolManager().createContext()
+  def toolManager(): ToolManager = new ToolManager
+
+  @Bean
+  def toolContext(): ToolContext = toolManager.createContext()
 }
