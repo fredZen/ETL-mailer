@@ -11,9 +11,9 @@ import org.scalatest.OneInstancePerTest
 
 @RunWith(classOf[JUnitRunner])
 class CssInlinerSpec extends EasyMockSugar with FlatSpec with ShouldMatchers with OneInstancePerTest {
-  val rule = mock[CssRule]
-  val otherRule = mock[CssRule]
-  val createRule = mock[(String, String) => CssRule]
+  val rule = mock[SimpleCssRule]
+  val otherRule = mock[SimpleCssRule]
+  val createRule = mock[(String, String) => SimpleCssRule]
 
   implicit val mocks = MockObjects(rule, otherRule, createRule)
 

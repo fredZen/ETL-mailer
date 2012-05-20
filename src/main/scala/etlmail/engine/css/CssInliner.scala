@@ -1,5 +1,6 @@
 package etlmail.engine.css
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.springframework.stereotype.Component
@@ -8,8 +9,10 @@ import scala.collection.JavaConversions._
 import scala.collection.LinearSeq
 
 @Component
-class CssInliner(makeCssRule: (String, String) => CssRule) {
-  def this() = this((selector: String, properties: String) => new CssRule(selector, properties))
+class CssInliner(makeCssRule: (String, String) => SimpleCssRule) {
+  def this() = this((selector: String, properties: String) => new SimpleCssRule(selector, properties))
+
+  private val parser = new CssParser
 
   def inlineStyles(doc: Document) {
     for (style <- doc.select("style")) {
@@ -21,14 +24,14 @@ class CssInliner(makeCssRule: (String, String) => CssRule) {
 
   def inlineStyle(doc: Document, styleRules: String) {
     val cssRules = extractSimpleRules(styleRules)
-    for (rule <- cssRules.sorted(Ordering[CssRule].reverse)) {
+    for (rule <- cssRules.sorted(Ordering[SimpleCssRule].reverse)) {
       rule.prependProperties(doc)
     }
   }
 
-  def extractSimpleRules(styleRules: String): List[CssRule] =
+  def extractSimpleRules(styleRules: String): List[SimpleCssRule] =
     (for {
-      Array(selector, properties) <- styleRules.split("[{}]").grouped(2)
-      simpleSelector <- selector.split(",")
+      CssRule(selectors, properties) <- parser.parseSheet(styleRules)
+      simpleSelector <- selectors
     } yield makeCssRule(simpleSelector.trim, properties)).toList
 }
