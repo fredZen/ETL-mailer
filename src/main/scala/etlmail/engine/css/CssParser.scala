@@ -3,16 +3,50 @@ import scala.util.parsing.combinator.JavaTokenParsers
 import org.springframework.stereotype.Component
 
 class CssParser extends JavaTokenParsers {
+  override protected val whiteSpace = """(?s)/\*.*?\*/""".r // CSS comment
+
   def parseSheet(sheet: String): List[CssRule] = parseAll(styleSheet, sheet).get
 
-  def styleSheet: Parser[List[CssRule]] = rep(rule)
+  def styleSheet: Parser[List[CssRule]] = optSpaces ~> rep(rule)
 
-  def rule: Parser[CssRule] = selector ~ "{" ~ properties ~ "}" ^^
-    { case sels ~ "{" ~ props ~ "}" => new CssRule(sels, props) }
+  def rule: Parser[CssRule] = (selectorGroup ~ "{" ~ declarations ~ "}" <~ optSpaces
+    ^^ { case selectorGroup ~ "{" ~ declarations ~ "}" => CssRule(selectorGroup, declarations) })
 
-  def selector: Parser[List[String]] = repsep(simpleSelector, ",")
+  def wrapWith[T, U <: T](wrapper: Seq[U] => T)(seq: Seq[U]) = seq match {
+    case Seq(elt) => elt
+    case _ => wrapper(seq)
+  }
 
-  def simpleSelector: Parser[String] = """[^{,]+""".r
+  def selectorGroup: Parser[SelectorSource] = (repsep(selector, """,\s*""".r)
+    ^^ wrapWith(SelectorGrouping))
 
-  def properties: Parser[String] = """[^}]*""".r
+  def selector: Parser[Selector] = chainl1(simpleSelectorSequence, simpleSelectorSequence, combinator) <~ optSpaces
+
+  def combinator: Parser[(Selector, UncombinedSelector) => Selector] = ("""[ >+~]""".r <~ optSpaces
+    ^^ concat)
+
+  def concat(combinator: String): (Selector, UncombinedSelector) => Selector =
+    combinator match {
+      case " " => Descendant
+      case ">" => Child
+      case "+" => AdjacentSibling
+      case "~" => Sibling
+    }
+
+  def simpleSelectorSequence: Parser[UncombinedSelector] = (rep1(typeSelector | classSelector | idSelector)
+    ^^ wrapWith(SimpleSelectorSequence))
+
+  def typeSelector: Parser[SimpleSelector] = ("""[a-zA-Z]+""".r
+    ^^ ((selector: String) => TypeSelector(selector)))
+
+  def classSelector: Parser[SimpleSelector] = ("""\.[a-zA-Z]+""".r
+    ^^ ((selector: String) => ClassSelector(selector.substring(1))))
+
+  def idSelector: Parser[SimpleSelector] = ("""#[a-zA-Z]+""".r
+    ^^ ((selector: String) => IdSelector(selector.substring(1))))
+
+  def declarations: Parser[String] = """[^}]*""".r
+
+  def optSpaces: Parser[Null] = """\s*""".r ^^^ null
+
 }

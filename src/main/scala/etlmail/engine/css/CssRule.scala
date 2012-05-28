@@ -1,3 +1,3 @@
 package etlmail.engine.css
 
-case class CssRule(simpleSelectors: List[String], properties: String)
+case class CssRule(selectors: SelectorSource, declarations: String)

@@ -1,37 +1,19 @@
 package etlmail.engine.css
 
-import org.apache.commons.lang.StringUtils.{ strip, countMatches }
+import org.apache.commons.lang.StringUtils.strip
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
 import scala.collection.JavaConversions._
 
-class SimpleCssRule(val simpleSelector: String, val properties: String) extends Ordered[SimpleCssRule] {
-  val specificity: SelectorSpecificity = {
-    val builder = new SelectorSpecificity.Builder
-    for {
-      rawfragment <- simpleSelector.split("[ +~>]")
-      fragment = strip(rawfragment)
-      if (!fragment.isEmpty())
-    } {
-      builder.addClass(countMatches(fragment, "."))
-      builder.addId(countMatches(fragment, "#"))
-      if (!"#.".contains(fragment.subSequence(0, 1))) {
-        builder.addType(1)
-      }
-    }
-    builder.asSpecificity()
-  }
-
-  override def compare(o: SimpleCssRule): Int = specificity.compare(o.specificity)
+case class SimpleCssRule(selector: Selector, properties: String) extends Ordered[SimpleCssRule] {
+  override def compare(o: SimpleCssRule): Int = selector.specificity.compare(o.selector.specificity)
 
   def prependProperties(doc: Document) {
-    for (selElem <- doc.select(simpleSelector)) {
+    for (selElem <- doc.select(selector.toString)) {
       val oldProperties = selElem.attr("style")
       selElem.attr("style", concatenateProperties(oldProperties, properties))
     }
   }
 
   private def concatenateProperties(oldProp: String, newProp: String): String =
-    strip(strip(oldProp), "") + "" + strip(newProp)
+    strip(oldProp) + strip(newProp)
 }

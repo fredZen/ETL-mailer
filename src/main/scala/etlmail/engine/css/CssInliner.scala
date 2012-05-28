@@ -9,9 +9,7 @@ import scala.collection.JavaConversions._
 import scala.collection.LinearSeq
 
 @Component
-class CssInliner(makeCssRule: (String, String) => SimpleCssRule) {
-  def this() = this((selector: String, properties: String) => new SimpleCssRule(selector, properties))
-
+class CssInliner {
   private val parser = new CssParser
 
   def inlineStyles(doc: Document) {
@@ -32,6 +30,6 @@ class CssInliner(makeCssRule: (String, String) => SimpleCssRule) {
   def extractSimpleRules(styleRules: String): List[SimpleCssRule] =
     (for {
       CssRule(selectors, properties) <- parser.parseSheet(styleRules)
-      simpleSelector <- selectors
-    } yield makeCssRule(simpleSelector.trim, properties)).toList
+      selector <- selectors.toList
+    } yield SimpleCssRule(selector, properties)).toList
 }

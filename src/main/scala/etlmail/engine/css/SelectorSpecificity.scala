@@ -1,6 +1,8 @@
 package etlmail.engine.css
 
-class SelectorSpecificity(val ids: Int, val classes: Int, val types: Int) extends Ordered[SelectorSpecificity] {
+case class SelectorSpecificity(ids: Int, classes: Int, types: Int) extends Ordered[SelectorSpecificity] {
+
+  def +(other: SelectorSpecificity): SelectorSpecificity = SelectorSpecificity(ids + other.ids, classes + other.classes, types + other.types)
 
   override def compare(o: SelectorSpecificity): Int = {
     var result = ids - o.ids
@@ -31,29 +33,4 @@ class SelectorSpecificity(val ids: Int, val classes: Int, val types: Int) extend
     })
 
   override def toString(): String = "SelectorSpecificit(" + ids + ", " + classes + ", " + types + ")"
-}
-
-object SelectorSpecificity {
-  class Builder {
-    private var ids: Int = 0
-    private var classes: Int = 0
-    private var types: Int = 0
-
-    def addId(count: Int): Builder = {
-      ids += count
-      return this
-    }
-
-    def addClass(count: Int): Builder = {
-      classes += count
-      return this
-    }
-
-    def addType(count: Int): Builder = {
-      types += count
-      return this
-    }
-
-    def asSpecificity(): SelectorSpecificity = new SelectorSpecificity(ids, classes, types)
-  }
 }
