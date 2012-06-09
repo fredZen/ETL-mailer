@@ -37,13 +37,13 @@ class CssParser extends JavaTokenParsers {
     ^^ wrapWith(SimpleSelectorSequence))
 
   def typeSelector: Parser[SimpleSelector] = ("""[a-zA-Z]+""".r
-    ^^ ((selector: String) => TypeSelector(selector)))
+    ^^ TypeSelector)
 
   def classSelector: Parser[SimpleSelector] = ("""\.[a-zA-Z]+""".r
-    ^^ ((selector: String) => ClassSelector(selector.substring(1))))
+    ^^ ((_: String).substring(1)).andThen(ClassSelector))
 
   def idSelector: Parser[SimpleSelector] = ("""#[a-zA-Z]+""".r
-    ^^ ((selector: String) => IdSelector(selector.substring(1))))
+    ^^ ((_: String).substring(1)).andThen(IdSelector))
 
   def declarations: Parser[String] = """[^}]*""".r
 
