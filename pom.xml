@@ -8,21 +8,21 @@
 	<version>0.2.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.6</java.version>
-		<spring.version>3.1.0.RELEASE</spring.version>
+		<scala.version>2.9.2</scala.version>
+		<spring.version>3.1.1.RELEASE</spring.version>
 		<cglib.version>2.2.2</cglib.version>
 		<persistence-api.version>1.0</persistence-api.version>
-		<aspectj.version>1.6.11</aspectj.version>
-		<aspectj-maven-plugin.version>1.4</aspectj-maven-plugin.version>
 		<slf4j.version>1.6.4</slf4j.version>
+		<grizzled-slf4j.version>0.6.9</grizzled-slf4j.version>
 		<logback.version>1.0.0</logback.version>
 		<groovy.version>1.8.6</groovy.version>
 		<junit.version>4.10</junit.version>
+		<scalatest.version>1.7.1</scalatest.version>
 		<easymock.version>3.1</easymock.version>
 		<fest-assert.version>1.4</fest-assert.version>
 		<velocity.version>1.7</velocity.version>
 		<velocity-tools.version>2.0</velocity-tools.version>
-		<javax.mail.version>1.4.4</javax.mail.version>
+		<javax.mail.version>1.4.5</javax.mail.version>
 		<guava.version>11.0.1</guava.version>
 		<jsoup.version>1.6.1</jsoup.version>
 		<miglayout.version>4.2</miglayout.version>
@@ -34,6 +34,12 @@
 		<commons-logging.version>1.1.1</commons-logging.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+
 		<!-- Spring and friends -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -50,11 +56,6 @@
 			<artifactId>cglib</artifactId>
 			<version>${cglib.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
 
 		<!-- Logging -->
 		<dependency>
@@ -68,6 +69,11 @@
 			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.clapper</groupId>
+			<artifactId>grizzled-slf4j_${scala.version}</artifactId>
+			<version>${grizzled-slf4j.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>${groovy.version}</version>
@@ -79,6 +85,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_${scala.version}</artifactId>
+			<version>${scalatest.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -193,46 +205,36 @@
 			<id>simplericity</id>
 			<url>http://simplericity.org/repository/</url>
 		</repository>
+		<repository>
+			<id>scala-tools.org</id>
+			<name>Scala-tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
 	</repositories>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>${aspectj-maven-plugin.version}</version>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.0.2</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>compile</goal>
-							<goal>test-compile</goal>
+							<goal>testCompile</goal>
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<verbose>false</verbose>
-					<outxml>true</outxml>
+					<includes>
+						<include>**/*Spec.class</include>
+					</includes>
 				</configuration>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<compilerVersion>${java.version}</compilerVersion>
-						<fork>true</fork>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 </project>
