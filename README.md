@@ -1,3 +1,6 @@
+# Pour compiler
+mvn clean package
+
 # Pour lancer
-* mvn scala:run -DmainClass=etlmail.front.gui.application.MailGui
+* java -jar target/newsletter-tool-_version_de_l'appli_-jar-with-dependencies.jar
 * Aller dans File/Preferences et régler le nom d'hôte et l'utilisateur du serveur mail (laisser vide si pas de login nécessaire)
