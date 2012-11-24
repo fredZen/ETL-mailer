@@ -15,5 +15,5 @@ case class SimpleCssRule(selector: Selector, properties: String) extends Ordered
   }
 
   private def concatenateProperties(oldProp: String, newProp: String): String =
-    strip(oldProp) + strip(newProp)
+    strip(newProp) + strip(oldProp)
 }
