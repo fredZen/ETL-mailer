@@ -102,4 +102,24 @@ class CssParserSpec extends FlatSpec with ShouldMatchers with OneInstancePerTest
     rules should have size (1)
     rules should contain(CssRule(SelectorGrouping(List(xyzSelector, abcSelector)), "yadda:badda"))
   }
+
+  "a group of letters" should "be a valid identifier" in {
+    val parsed = parser.parseAll(parser.identifier, "azerty").get
+    parsed should be ("azerty")
+  }
+
+  "h1" should "be a valid type selector" in {
+    val parsed = parser.parseAll(parser.typeSelector, "h1").get
+    parsed should be (TypeSelector("h1"))
+  }
+
+  ".pipo" should "be a valid class selector" in {
+    val parsed = parser.parseAll(parser.classSelector, ".pipo").get
+    parsed should be (ClassSelector("pipo"))
+  }
+
+  ".molo" should "be a valid id selector" in {
+    val parsed = parser.parseAll(parser.idSelector, "#molo").get
+    parsed should be (IdSelector("molo"))
+  }
 }
