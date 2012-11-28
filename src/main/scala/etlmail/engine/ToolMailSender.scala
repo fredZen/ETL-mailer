@@ -20,6 +20,7 @@ import etlmail.engine.css.CssInliner
 import scala.collection.mutable.{ HashSet, Set }
 import scala.collection.JavaConversions._
 import grizzled.slf4j.Logging
+import java.net.URL
 
 abstract class ToolMailSender extends Logging {
 
@@ -47,12 +48,13 @@ abstract class ToolMailSender extends Logging {
 
         val doc = Jsoup.parse(text)
 
-        val imageNames = convertImagesToCid(doc)
+        val resources = new File(notification.resourcesPath)
+
+        val imageNames = convertImagesToCid(resources, doc)
         cssInliner.inlineStyles(doc)
 
         message.setText(doc.outerHtml, true)
 
-        val resources = new File(notification.resourcesPath)
         // Adding Inline Resources
         for (imageName <- imageNames) {
           val image = new FileSystemResource(new File(resources, imageName))
@@ -78,14 +80,19 @@ abstract class ToolMailSender extends Logging {
       if (!adressePure.isEmpty)
     } yield adressePure.toLowerCase
 
-  def convertImagesToCid(doc: Document): Collection[String] = {
+  def convertImagesToCid(root: File, doc: Document): Iterable[String] = {
+    val rootContext = root.toURI().toURL();
     val imageNames: Set[String] = new HashSet[String]
     for (image <- doc.select("img")) {
       val source = image.attr("src")
-      if (source != null && !source.startsWith("http://")) {
-        imageNames.add(source)
-        image.attr("src", "cid:" + source)
-        debug("Convert image to cid: " + source)
+      if (source != null) {
+        val url: URL = new URL(rootContext, source)
+        val protocol: String = url.getProtocol
+        if(protocol == "file" ) {
+          imageNames.add(source)
+          image.attr("src", "cid:" + source)
+          debug("Convert image to cid: " + source)
+        }
       }
     }
     return imageNames

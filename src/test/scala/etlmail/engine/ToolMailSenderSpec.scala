@@ -27,6 +27,7 @@ import org.springframework.test.context.TestContextManager
 
 import etlmail.engine.css.CssInliner
 import etlmail.front.cli.PropertyServerConfiguration
+import java.io.File
 
 class EngineLessToolMailSender extends ToolMailSender {
   @Override
@@ -109,7 +110,7 @@ class ToolMailSenderSpec extends FlatSpec with ShouldMatchers with EasyMockSugar
     document.appendElement("img").attr("src", "gnu.gif")
 
     // when
-    val imageNames = toolMailSender.convertImagesToCid(document)
+    val imageNames = toolMailSender.convertImagesToCid(new File("."), document)
 
     // then
     imageNames should have size (1)
